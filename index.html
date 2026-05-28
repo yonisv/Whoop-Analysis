@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Rise of WHOOP — How a Harvard Rower Built the Future of Human Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  --bg:#ffffff;
+  --bg2:#f5f5f3;
+  --bg3:#0a0a0a;
+  --text:#0f0f0f;
+  --text2:#4a4a4a;
+  --text3:#9a9a9a;
+  --green:#c8f135;
+  --green-ink:#3a5c00;
+  --border:#e4e4e0;
+  --border2:#d0d0cc;
+  --head:'Libre Baskerville',Georgia,serif;
+  --body:'DM Sans',system-ui,sans-serif;
+  --mono:'Space Mono',monospace;
+}
+
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+
+/* ── STICKY HEADER ── */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:13px 0;
+}
+.header-inner{
+  max-width:1120px;margin:0 auto;padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo-badge{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);
+}
+.logo-badge span{
+  display:inline-block;background:var(--green);color:var(--bg3);
+  padding:3px 8px;border-radius:4px;font-weight:700;font-size:10px;
+  letter-spacing:.08em;
+}
+.byline-head{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.06em;}
+
+/* ── HERO ── */
+.hero{
+  background:var(--bg3);color:#fff;
+  padding:96px 40px 80px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 100%,rgba(200,241,53,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-kicker{
+  display:inline-block;
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--green);margin-bottom:28px;
+}
+.hero h1{
+  font-family:var(--head);font-size:clamp(2.4rem,5vw,4rem);font-weight:700;
+  line-height:1.12;letter-spacing:-.01em;
+  color:#fff;max-width:820px;margin:0 auto 28px;
+}
+.hero h1 em{font-style:italic;color:var(--green);}
+.hero-sub{
+  font-size:1.05rem;color:rgba(255,255,255,.6);
+  max-width:560px;margin:0 auto 40px;line-height:1.65;
+  font-weight:300;
+}
+.hero-meta{
+  display:flex;align-items:center;justify-content:center;gap:28px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  color:rgba(255,255,255,.3);text-transform:uppercase;
+}
+.hero-meta strong{color:rgba(255,255,255,.55);}
+.hero-divider{width:1px;height:14px;background:rgba(255,255,255,.15);}
+
+/* ── ARTICLE BODY ── */
+.article-wrap{max-width:720px;margin:0 auto;padding:64px 40px;}
+
+p{margin-bottom:1.5rem;color:var(--text2);font-size:1.05rem;}
+p:first-child{color:var(--text);}
+p strong{color:var(--text);font-weight:600;}
+
+/* ── SECTION HEADINGS ── */
+.section-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--text3);display:block;margin-bottom:14px;
+}
+h2{
+  font-family:var(--head);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;
+  line-height:1.2;letter-spacing:-.01em;color:var(--text);
+  margin-bottom:24px;
+}
+h3{
+  font-family:var(--head);font-size:1.25rem;font-weight:700;
+  line-height:1.25;color:var(--text);margin-bottom:16px;
+}
+
+/* ── SECTION BLOCK ── */
+.section{padding:56px 0;border-top:1px solid var(--border);}
+.section:first-child{border-top:none;}
+
+/* ── PULL QUOTE ── */
+.pull-quote{
+  max-width:900px;margin:0 auto;
+  padding:56px 80px;
+  background:var(--bg3);color:#fff;
+  border-radius:4px;
+}
+.pull-quote blockquote{
+  font-family:var(--head);font-size:clamp(1.4rem,2.8vw,1.9rem);
+  font-style:italic;font-weight:400;line-height:1.4;
+  color:#fff;margin-bottom:20px;
+}
+.pull-quote cite{
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--green);font-style:normal;
+}
+
+/* ── CALLOUT ── */
+.callout{
+  background:var(--bg2);border-left:3px solid var(--green);
+  padding:22px 28px;margin:32px 0;border-radius:0 6px 6px 0;
+}
+.callout p{margin:0;font-size:.95rem;color:var(--text);}
+
+/* ── STAT ROW ── */
+.stat-strip{
+  background:var(--bg3);color:#fff;
+  padding:48px 60px;margin:0 auto;
+  max-width:900px;border-radius:4px;
+}
+.stat-strip-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:32px;text-align:center;
+}
+.stat-n{
+  font-family:var(--head);font-size:2.6rem;font-weight:700;
+  color:var(--green);line-height:1;letter-spacing:-.03em;
+  display:block;margin-bottom:8px;
+}
+.stat-l{
+  font-family:var(--mono);font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.45);
+  display:block;
+}
+
+/* ── CHART SECTION ── */
+.chart-block{
+  max-width:900px;margin:0 auto;padding:48px 40px;
+  background:var(--bg2);border-radius:4px;
+}
+.chart-title{
+  font-family:var(--head);font-size:1.1rem;font-weight:700;
+  color:var(--text);margin-bottom:6px;
+}
+.chart-sub{
+  font-family:var(--mono);font-size:10px;color:var(--text3);
+  letter-spacing:.06em;margin-bottom:28px;
+}
+.chart-wrap{position:relative;height:260px;}
+
+/* ── TIMELINE ── */
+.timeline-block{max-width:900px;margin:0 auto;padding:0 40px;}
+.timeline-item{
+  display:grid;grid-template-columns:100px 1fr;
+  gap:0 32px;padding:24px 0;border-bottom:1px solid var(--border);
+}
+.timeline-item:last-child{border-bottom:none;}
+.tl-year{
+  font-family:var(--head);font-size:1.8rem;font-weight:700;
+  color:var(--border2);line-height:1;padding-top:4px;
+  transition:color .3s;
+}
+.timeline-item:hover .tl-year{color:var(--green-ink);}
+.tl-content{}
+.tl-event{
+  font-family:var(--head);font-size:1.05rem;font-weight:700;
+  color:var(--text);margin-bottom:5px;
+}
+.tl-detail{font-size:.88rem;color:var(--text2);line-height:1.55;margin:0;}
+.tl-badge{
+  display:inline-block;margin-top:8px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--green);color:var(--bg3);padding:3px 8px;border-radius:3px;
+  font-weight:700;
+}
+
+/* ── DATA SECTION (personal) ── */
+.data-section{
+  background:var(--bg2);padding:64px 0;
+}
+.data-inner{max-width:900px;margin:0 auto;padding:0 40px;}
+
+/* ── COMPARE TABLE ── */
+.compare-wrap{max-width:900px;margin:0 auto;padding:0 40px;}
+table{width:100%;border-collapse:collapse;}
+th{
+  font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text3);padding:8px 14px;border-bottom:2px solid var(--border2);text-align:left;
+}
+td{
+  font-size:.88rem;color:var(--text2);padding:12px 14px;
+  border-bottom:1px solid var(--border);
+}
+td.hl{color:var(--text);font-weight:600;}
+td.tg{color:var(--green-ink);font-weight:700;}
+tr:hover td{background:var(--bg2);}
+
+/* ── TWO COLUMN FEATURE ── */
+.two-col{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2px;max-width:900px;margin:0 auto;
+  background:var(--border);border-radius:4px;overflow:hidden;
+}
+.two-col-item{
+  background:var(--bg);padding:36px 36px;
+}
+.two-col-item h3{font-size:1rem;margin-bottom:10px;}
+.two-col-item p{font-size:.88rem;margin:0;color:var(--text2);}
+.two-col-num{
+  font-family:var(--head);font-size:2.4rem;font-weight:700;
+  color:var(--text);letter-spacing:-.03em;line-height:1;
+  display:block;margin-bottom:8px;
+}
+.two-col-num.green{color:var(--green-ink);}
+
+/* ── HIGHLIGHT BOX ── */
+.hl-box{
+  background:var(--bg3);color:#fff;padding:36px 40px;
+  border-radius:4px;margin:40px 0;
+}
+.hl-box h3{color:var(--green);font-family:var(--head);margin-bottom:10px;}
+.hl-box p{color:rgba(255,255,255,.7);margin:0;font-size:.95rem;}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--bg3);color:rgba(255,255,255,.3);
+  padding:48px 40px;margin-top:80px;
+  text-align:center;
+}
+footer p{font-size:.85rem;margin:0;color:rgba(255,255,255,.35);}
+footer strong{color:rgba(255,255,255,.6);}
+footer a{color:var(--green);text-decoration:none;}
+
+/* ── UTILITY ── */
+.wide{max-width:900px;margin:0 auto;padding:0 40px;}
+.spacer{height:48px;}
+.spacer-sm{height:28px;}
+em.green{color:var(--green-ink);font-style:normal;font-weight:600;}
+
+/* ── SCROLL REVEALS ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .hero{padding:64px 24px 56px;}
+  .article-wrap{padding:40px 24px;}
+  .pull-quote{padding:36px 28px;}
+  .stat-strip-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+  .timeline-item{grid-template-columns:70px 1fr;gap:0 20px;}
+  .header-inner{padding:0 20px;}
+  .chart-block,.data-inner,.compare-wrap,.timeline-block,.wide{padding-left:24px;padding-right:24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="header-inner">
+    <div class="logo-badge">
+      <span>WHOOP</span> Analysis
+    </div>
+    <div class="byline-head">Yonis &nbsp;·&nbsp; May 2026</div>
+  </div>
+</header>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-kicker">The Startup That Changed Human Performance</div>
+  <h1>The Rise of WHOOP:<br>How a Harvard Rower Built<br>the <em>Future of Health Data</em></h1>
+  <p class="hero-sub">Will Ahmed didn't set out to build a fitness tracker. He set out to answer the question that elite athletes had been asking for decades — and nobody had the data to answer.</p>
+  <div class="hero-meta">
+    <span><strong>Yonis</strong> — Portfolio Analysis</span>
+    <div class="hero-divider"></div>
+    <span>Cedarville University · 2026</span>
+    <div class="hero-divider"></div>
+    <span>~12 min read</span>
+  </div>
+</div>
+
+<!-- ═══ INTRO ═══ -->
+<div class="article-wrap">
+  <div class="section">
+    <p style="font-size:1.15rem;color:var(--text);font-weight:400;">In the spring of 2012, a 22-year-old Harvard rowing captain named Will Ahmed was sitting with a problem no one had solved. His teammates were getting injured at an alarming rate. Every athlete had the same training plan. Every athlete had access to the same coaches. But some recovered fast and some broke down — and no one could explain why.</p>
+    <p>The data didn't exist. Not anywhere. The sports world was awash in performance metrics: sprint times, power outputs, VO2 max. But no one was measuring the single variable that actually predicted the next day's performance: <strong>how recovered was the athlete right now?</strong></p>
+    <p>Ahmed built WHOOP to answer that question. Over the next 12 years, that question turned into a $3.6 billion company, an FDA-cleared medical device, and arguably the most important innovation in personal health technology since the smartphone. This is the story of how it happened — and why it matters for where health is going.</p>
+  </div>
+</div>
+
+<!-- ═══ THE PROBLEM ═══ -->
+<div class="article-wrap">
+  <div class="section">
+    <span class="section-label">01 — The Problem</span>
+    <h2>The fitness wearable market was solving the wrong problem</h2>
+    <p>Before WHOOP, the wearable industry was built on a single philosophy: <strong>more is more</strong>. Count more steps. Track more workouts. Burn more calories. The assumption was that activity data was the key to health — that if you could quantify how much you moved, you could optimize how you felt.</p>
+    <p>This assumption had two fatal flaws. First, activity metrics are vanity metrics. The famous 10,000 steps daily target originated from a 1960s Japanese pedometer marketing campaign — not science. Second, and more fundamentally, measuring output tells you nothing about capacity. Knowing how hard you trained yesterday says nothing about whether your body is ready to do it again today.</p>
+    <div class="callout">
+      <p>The question every athlete needs answered isn't "how hard did I train?" It's "how recovered am I right now?" Before WHOOP, no consumer device was even trying to answer it.</p>
+    </div>
+    <p>Elite sports teams understood this gap. The NFL, NBA, and Olympic programs had sports scientists measuring recovery proxies — heart rate variability, resting heart rate, cortisol levels — but these were expensive, invasive, and inaccessible to anyone outside a professional training facility. The technology to bring this kind of data to everyday athletes simply didn't exist.</p>
+    <p>Ahmed saw the gap and decided to close it. What he built wasn't an incremental improvement on existing wearables. It was a fundamentally different product category: <strong>a recovery-first biometric platform</strong> that treats the body as a system to be understood, not just a machine to be pushed harder.</p>
+  </div>
+</div>
+
+<!-- ═══ PULL QUOTE 1 ═══ -->
+<div class="pull-quote reveal">
+  <blockquote>"I wanted to understand why some athletes could handle the same training load and thrive, while others broke down. That question became the foundation for everything we built."</blockquote>
+  <cite>— Will Ahmed, Founder & CEO, WHOOP</cite>
+</div>
+
+<!-- ═══ THE FOUNDER ═══ -->
+<div class="article-wrap">
+  <div class="section">
+    <span class="section-label">02 — The Founder</span>
+    <h2>Will Ahmed: The founder who refused to take no for an answer</h2>
+    <p>Ahmed dropped out of Harvard in 2012 to build WHOOP full-time, living on the conviction that this product needed to exist. He was 22 years old, with no engineering background, no medical credentials, and no traction. What he had was relentless clarity about the problem and an unusual willingness to be audacious in every room he entered.</p>
+    <p>The early fundraising years are now part of Silicon Valley sports-tech folklore. Ahmed would walk into investor meetings and present a vision of a world where the greatest athletes on the planet — household names, World Cup-level athletes — would be wearing WHOOP as an indispensable part of their performance protocol. Not "we hope," not "we think" — this is what would happen. He described the world he was building as if it had already arrived.</p>
+    <div class="callout">
+      <p>Ahmed reportedly told early investors that athletes like Cristiano Ronaldo would one day wear WHOOP. At the time, it sounded delusional. By 2021, elite athletes across every major professional sport were wearing it. The vision wasn't delusional. It was simply early.</p>
+    </div>
+    <p>That brand of founder conviction — the refusal to hedge, the willingness to describe the future in the present tense — is one of the underappreciated drivers of WHOOP's success. It attracted the right early investors (those willing to bet on a bold vision), the right early team (engineers and scientists who wanted to work on something that mattered), and the right early customers (elite athletes who sensed they were getting in on something real).</p>
+    <p>Ahmed's background as an athlete also gave him a credibility that pure tech founders lacked. He wasn't guessing about what athletes needed. He had lived it. He had been the person trying to optimize performance with no useful data. Every design decision WHOOP made in the early years had his firsthand experience behind it.</p>
+  </div>
+</div>
+
+<!-- ═══ TIMELINE ═══ -->
+<div class="spacer"></div>
+<div class="wide reveal">
+  <span class="section-label">The Arc — 2012 to Present</span>
+  <h2 style="max-width:720px;margin-bottom:36px;">From Harvard dorm room to $3.6 billion</h2>
+</div>
+<div class="timeline-block">
+  <div class="timeline-item reveal">
+    <div class="tl-year">2012</div>
+    <div class="tl-content">
+      <div class="tl-event">Founded at Harvard University</div>
+      <p class="tl-detail">Will Ahmed drops out at 22. First prototype built in a dorm room. Raises seed funding from classmates, professors, and early angel investors who bet on the founder's conviction over the product's maturity.</p>
+    </div>
+  </div>
+  <div class="timeline-item reveal">
+    <div class="tl-year">2015</div>
+    <div class="tl-content">
+      <div class="tl-event">NFL Sideline Approval</div>
+      <p class="tl-detail">WHOOP becomes the first wearable cleared for NFL sideline use. The credibility of elite sport adoption begins compounding. Athletes in every league start paying attention.</p>
+      <span class="tl-badge">First-mover</span>
+    </div>
+  </div>
+  <div class="timeline-item reveal">
+    <div class="tl-year">2018</div>
+    <div class="tl-content">
+      <div class="tl-event">The Subscription Pivot</div>
+      <p class="tl-detail">WHOOP makes the counterintuitive decision to give away hardware for free and charge a monthly membership. The industry calls it risky. It becomes WHOOP's most defensible strategic move — aligning business incentives completely with user outcomes.</p>
+      <span class="tl-badge">Strategic inflection</span>
+    </div>
+  </div>
+  <div class="timeline-item reveal">
+    <div class="tl-year">2020</div>
+    <div class="tl-content">
+      <div class="tl-event">COVID Detection Changes Everything</div>
+      <p class="tl-detail">WHOOP's biometric data detects COVID-19 symptoms three days before positive test results. The finding goes viral. The consumer market — not just elite sport — suddenly understands what continuous health monitoring can do. Subscriber growth explodes.</p>
+      <span class="tl-badge">Breakout moment</span>
+    </div>
+  </div>
+  <div class="timeline-item reveal">
+    <div class="tl-year">2021</div>
+    <div class="tl-content">
+      <div class="tl-event">$200M Series F at $3.6B Valuation</div>
+      <p class="tl-detail">WHOOP raises at a $3.6 billion valuation. Reportedly declines an acquisition offer from Apple to stay independent. The long-term vision requires staying private long enough to build the data infrastructure that makes it truly defensible.</p>
+      <span class="tl-badge">Unicorn+</span>
+    </div>
+  </div>
+  <div class="timeline-item reveal">
+    <div class="tl-year">2024</div>
+    <div class="tl-content">
+      <div class="tl-event">WHOOP 5.0 + AI Coach</div>
+      <p class="tl-detail">Launches WHOOP Coach — an AI-powered conversational health advisor built on years of personal biometric data. Not generic wellness advice. Personalized intelligence generated from your own physiological baseline. The product category finally catches up to the vision Ahmed had in 2012.</p>
+      <span class="tl-badge">AI inflection</span>
+    </div>
+  </div>
+  <div class="timeline-item reveal">
+    <div class="tl-year">2025</div>
+    <div class="tl-content">
+      <div class="tl-event">WHOOP MG — FDA-Cleared Medical Grade</div>
+      <p class="tl-detail">Atrial fibrillation detection cleared by the FDA. WHOOP crosses from consumer health into clinical diagnostics. The company that started as a sports recovery tool is now a medical device company. The original vision — data-driven health for everyone — takes its largest step forward yet.</p>
+      <span class="tl-badge">Clinical grade</span>
+    </div>
+  </div>
+</div>
+<div class="spacer"></div>
+
+<!-- ═══ WHAT THEY BUILT ═══ -->
+<div class="article-wrap">
+  <div class="section">
+    <span class="section-label">03 — The Product</span>
+    <h2>What WHOOP actually built, and why it was different</h2>
+    <p>The product decisions that made WHOOP work weren't obvious — and most of them looked like mistakes at the time. The most significant: <strong>no screen</strong>. While every competitor was trying to pack more features and more displays onto the wrist, WHOOP shipped a device that showed you nothing. No notifications. No step count. No time. Just a band.</p>
+    <p>This wasn't an oversight. It was a philosophy. A screen competes for attention. It turns the device into a gadget you glance at rather than a sensor that's simply, quietly measuring you. By removing the screen entirely, WHOOP removed the friction between data collection and continuous wear — and continuous wear is the only thing that makes the data meaningful.</p>
+    <p>The three-metric system WHOOP built — Recovery, Strain, and Sleep — maps directly to the athletic performance cycle that Ahmed observed at Harvard. You train (Strain). You rest (Sleep). You measure readiness (Recovery). Every day, in sequence. The product is the science made tangible.</p>
+  </div>
+</div>
+
+<!-- ═══ HOW IT WORKS FEATURE ═══ -->
+<div class="spacer-sm"></div>
+<div class="two-col reveal wide">
+  <div class="two-col-item" style="background:#0a0a0a;color:#fff;">
+    <span style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,241,53,.7);display:block;margin-bottom:14px;">Recovery · 0–100%</span>
+    <h3 style="color:#fff;font-family:var(--head);font-size:1.15rem;margin-bottom:10px;">Your readiness, every morning</h3>
+    <p style="font-size:.9rem;color:rgba(255,255,255,.55);margin:0;line-height:1.65;">Calculated from HRV, resting heart rate, respiratory rate, and sleep quality. Green (67–100%) means push. Yellow means manage. Red means rest. The score isn't how you feel — it's what your nervous system is actually reporting.</p>
+  </div>
+  <div class="two-col-item" style="background:#111;color:#fff;">
+    <span style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,241,53,.7);display:block;margin-bottom:14px;">Strain · 0–21 scale</span>
+    <h3 style="color:#fff;font-family:var(--head);font-size:1.15rem;margin-bottom:10px;">Load, not steps</h3>
+    <p style="font-size:.9rem;color:rgba(255,255,255,.55);margin:0;line-height:1.65;">Cardiovascular load on an exponential scale calibrated to your personal maximum heart rate. Tracks workouts, stress, and daily activity. A score of 18 isn't twice as hard as a 9 — it's approaching the physiological ceiling of what a human body can sustain in a day.</p>
+  </div>
+  <div class="two-col-item" style="background:#161616;color:#fff;">
+    <span style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,241,53,.7);display:block;margin-bottom:14px;">Sleep · Stage-level tracking</span>
+    <h3 style="color:#fff;font-family:var(--head);font-size:1.15rem;margin-bottom:10px;">Not just duration</h3>
+    <p style="font-size:.9rem;color:rgba(255,255,255,.55);margin:0;line-height:1.65;">Tracks REM, deep (SWS), light, and awake time. Calculates your personal sleep need each night — not an average for your age group, but the specific number of hours your body requires based on that day's strain and accumulated sleep debt.</p>
+  </div>
+  <div class="two-col-item" style="background:#1a1a1a;color:#fff;">
+    <span style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,241,53,.7);display:block;margin-bottom:14px;">HRV · The master signal</span>
+    <h3 style="color:#fff;font-family:var(--head);font-size:1.15rem;margin-bottom:10px;">What powers everything</h3>
+    <p style="font-size:.9rem;color:rgba(255,255,255,.55);margin:0;line-height:1.65;">Heart rate variability — the millisecond variation between heartbeats — is the single best non-invasive proxy for autonomic nervous system balance. The higher it is, the more recovered you are. WHOOP's entire intelligence layer is built on top of this signal.</p>
+  </div>
+</div>
+<div class="spacer"></div>
+
+<!-- ═══ DATA + AI ═══ -->
+<div class="article-wrap">
+  <div class="section">
+    <span class="section-label">04 — The Innovation</span>
+    <h2>The first startup to bet everything on health data and AI</h2>
+    <p>WHOOP didn't just build a better sensor. They built a data infrastructure at a scale no competitor had attempted — and then, in 2024, they layered AI on top of it in a way that finally delivered on the premise Ahmed had been selling since 2012.</p>
+    <p>The WHOOP Coach, launched alongside WHOOP 5.0, is a conversational AI trained not on population health data, but on <strong>your personal biometric history</strong>. Ask it whether you should train hard today, and it draws on your last 30 days of recovery scores, sleep patterns, and strain data to give you a specific, contextual answer. Not "studies suggest adults need 7–9 hours of sleep." Rather: "Your HRV has been declining for five days and your recovery trend is negative — this is not the day to push."</p>
+    <p>This personalization depth is the competitive moat that most analysts miss when they write about WHOOP. The AI isn't impressive because it's large or sophisticated. It's impressive because it's <em>specific to you</em> — and it gets more specific with every additional day of data. The longer you wear it, the more irreplaceable it becomes.</p>
+  </div>
+</div>
+
+<!-- ═══ AI CHART ═══ -->
+<div class="spacer-sm"></div>
+<div class="chart-block reveal wide">
+  <div class="chart-title">The Data Flywheel: Why WHOOP Gets Harder to Leave</div>
+  <div class="chart-sub">Estimated personalization value over time (indexed) · Illustrative model</div>
+  <div class="chart-wrap">
+    <canvas id="flywheelChart"></canvas>
+  </div>
+  <p style="font-size:.78rem;color:var(--text3);margin-top:14px;margin-bottom:0;">As personal baseline data accumulates, AI coaching accuracy increases exponentially — creating a switching cost that compounds with every additional month of wear. This is WHOOP's deepest competitive moat.</p>
+</div>
+<div class="spacer"></div>
+
+<!-- ═══ PULL QUOTE 2 ═══ -->
+<div class="pull-quote reveal">
+  <blockquote>"The wearable was always just the data pipeline. The product was always what we could do with the data once we had enough of it."</blockquote>
+  <cite>— Will Ahmed, Founder & CEO, WHOOP</cite>
+</div>
+
+<!-- ═══ BUSINESS MODEL ═══ -->
+<div class="article-wrap">
+  <div class="section">
+    <span class="section-label">05 — Business Model</span>
+    <h2>Give away the hardware. Sell the intelligence.</h2>
+    <p>The subscription pivot in 2018 remains one of the most counterintuitive strategic decisions in consumer hardware history. WHOOP made the hardware free and charged $30 per month for membership. The device you could hold in your hand cost nothing. The data and insights it generated were the product.</p>
+    <p>The sports world thought Ahmed was out of his mind. Hardware companies have margins. Subscriptions are for software. But Ahmed understood something the hardware industry had missed: the value of a wearable isn't in the sensor — it's in the longitudinal data it generates and the insights it enables. The sensor is a cost of goods. The intelligence is the business.</p>
+    <p>The subscription model also aligned WHOOP's incentives with its users' in a way that's rare in consumer technology. A company that charges you once for hardware profits when you buy. A company that charges you monthly profits only when you find value — every single month. That alignment drove WHOOP's obsession with product quality, accuracy, and the relentless investment in the AI coaching layer that finally arrived in 2024.</p>
+  </div>
+</div>
+
+<!-- ═══ STAT STRIP ═══ -->
+<div class="stat-strip reveal wide">
+  <div class="stat-strip-grid">
+    <div>
+      <span class="stat-n">$30<span style="font-size:1.4rem">/mo</span></span>
+      <span class="stat-l">Membership · hardware included</span>
+    </div>
+    <div>
+      <span class="stat-n">$3.6B</span>
+      <span class="stat-l">Valuation · Series F 2021</span>
+    </div>
+    <div>
+      <span class="stat-n">100+</span>
+      <span class="stat-l">Pro teams across major sports</span>
+    </div>
+    <div>
+      <span class="stat-n">12 yrs</span>
+      <span class="stat-l">Building before the AI layer arrived</span>
+    </div>
+  </div>
+</div>
+<div class="spacer"></div>
+
+<!-- ═══ TRUST ═══ -->
+<div class="article-wrap">
+  <div class="section">
+    <span class="section-label">06 — Adoption</span>
+    <h2>How WHOOP earned the world's best athletes</h2>
+    <p>Ahmed's early bet on elite sport wasn't just a business strategy — it was a proof-of-concept loop. Elite athletes are the most demanding users any performance product can have. They have sophisticated support staffs who will immediately detect if a product is inaccurate or unreliable. They have more to lose from bad data than any other user group.</p>
+    <p>By targeting the NFL, NBA, PGA Tour, and Olympic programs first, WHOOP subjected its technology to the most rigorous real-world testing environment possible. When those organizations didn't just tolerate WHOOP but embedded it into their training protocols, it signaled to the broader market that the science was sound. The aspirational effect did the rest.</p>
+    <div class="callout">
+      <p>The adoption sequence — elite sport → professional consumer → general population — mirrors the playbook of every durable health technology. When the world's best trust it with their careers, everyone else eventually trusts it with their lives.</p>
+    </div>
+    <p>Today, WHOOP is used by NFL players across all 32 teams, is the official wearable of the PGA Tour, has been adopted by NBA players and coaching staffs, and is deployed by US Special Operations units for readiness monitoring in operational environments. Each use case validates a different dimension of the technology — performance, endurance, cognition, and mission-critical decision making under stress.</p>
+  </div>
+</div>
+
+<!-- ═══ COMPETITOR CHART ═══ -->
+<div class="spacer-sm"></div>
+<div class="chart-block reveal wide" style="padding-bottom:32px;">
+  <div class="chart-title">Market Positioning: Focus vs. Feature Depth</div>
+  <div class="chart-sub">How WHOOP compares against major wearable competitors · 2025</div>
+  <div class="chart-wrap" style="height:280px;">
+    <canvas id="radarChart"></canvas>
+  </div>
+</div>
+<div class="spacer-sm"></div>
+<div class="compare-wrap reveal">
+  <table>
+    <thead><tr>
+      <th>Device</th><th>Primary Focus</th><th>Screen</th><th>Revenue Model</th><th>Recovery Score</th><th>AI Coaching</th>
+    </tr></thead>
+    <tbody>
+      <tr><td class="hl">WHOOP 5.0</td><td class="tg">Recovery & performance</td><td>None</td><td>Subscription</td><td class="tg">✓ Core product</td><td class="tg">✓ WHOOP Coach</td></tr>
+      <tr><td>Oura Ring Gen 4</td><td>Sleep & wellness</td><td>None</td><td>Ring + subscription</td><td>Partial</td><td>Limited</td></tr>
+      <tr><td>Apple Watch S10</td><td>Smartwatch + health</td><td>Large</td><td>One-time hardware</td><td>No</td><td>No</td></tr>
+      <tr><td>Garmin Fenix 8</td><td>GPS sport tracking</td><td>Yes</td><td>One-time hardware</td><td>Partial</td><td>Limited</td></tr>
+      <tr><td>Fitbit Sense 2</td><td>General wellness</td><td>Yes</td><td>Hardware + optional sub</td><td>No</td><td>No</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="spacer"></div>
+
+<!-- ═══ MY DATA ═══ -->
+<div class="data-section">
+  <div class="data-inner">
+    <span class="section-label">07 — Ground Truth</span>
+    <h2 style="max-width:680px;margin-bottom:16px;">What 691 consecutive days actually shows you</h2>
+    <p style="max-width:680px;color:var(--text2);">I've worn WHOOP every day since June 2024 — across soccer seasons, weightlifting blocks, exam weeks, travel, and everything in between. The data below isn't illustrative. It's my actual physiological record. What it reveals about the product is more compelling than any marketing claim WHOOP could make.</p>
+    <div class="spacer-sm"></div>
+    <div class="chart-block" style="padding:0;background:none;">
+      <div class="chart-title">My Recovery Score: 24-Month Trend</div>
+      <div class="chart-sub">Monthly average recovery % · June 2024 — May 2026 · 686 scored days</div>
+      <div class="chart-wrap" style="height:280px;">
+        <canvas id="recoveryChart"></canvas>
+      </div>
+    </div>
+    <div class="spacer-sm"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:24px;">
+      <div style="background:var(--bg);padding:24px;border-radius:4px;border:1px solid var(--border);">
+        <div style="font-family:var(--head);font-size:2.2rem;font-weight:700;color:#0a0a0a;letter-spacing:-.03em;line-height:1;margin-bottom:6px;">57.5%</div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);">Average recovery · 686 days</div>
+        <p style="font-size:.82rem;color:var(--text2);margin-top:10px;margin-bottom:0;line-height:1.5;">Hovering in the yellow zone for most of two years. Without WHOOP, I would have called this "performing fine." The data showed otherwise.</p>
+      </div>
+      <div style="background:var(--bg);padding:24px;border-radius:4px;border:1px solid var(--border);">
+        <div style="font-family:var(--head);font-size:2.2rem;font-weight:700;color:#0a0a0a;letter-spacing:-.03em;line-height:1;margin-bottom:6px;">−9ms</div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);">HRV decline · First vs last 90 days</div>
+        <p style="font-size:.82rem;color:var(--text2);margin-top:10px;margin-bottom:0;line-height:1.5;">My HRV dropped from 49ms to 40ms over the study period — a measurable signal of cumulative stress that feelings alone would never have surfaced.</p>
+      </div>
+      <div style="background:var(--bg);padding:24px;border-radius:4px;border:1px solid var(--border);">
+        <div style="font-family:var(--head);font-size:2.2rem;font-weight:700;color:#0a0a0a;letter-spacing:-.03em;line-height:1;margin-bottom:6px;">6.7 hrs</div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);">Sleep avg · vs 10.1 hrs needed</div>
+        <p style="font-size:.82rem;color:var(--text2);margin-top:10px;margin-bottom:0;line-height:1.5;">A 3.4-hour nightly deficit, compounding. Before WHOOP surfaced it, I genuinely believed I was sleeping enough. The data disagreed clearly.</p>
+      </div>
+    </div>
+    <div class="spacer-sm"></div>
+    <div style="background:var(--bg3);padding:28px 32px;border-radius:4px;color:#fff;">
+      <h3 style="font-family:var(--head);color:var(--green);margin-bottom:10px;">The point isn't the metrics</h3>
+      <p style="font-size:.92rem;color:rgba(255,255,255,.6);margin:0;line-height:1.7;">Spending two years inside this data taught me something about WHOOP that no product review captures: the value isn't in any individual number. It's in the <strong style="color:#fff;">feedback loop</strong>. The moment you start making decisions based on your recovery score instead of how you feel, you're operating with a fundamentally different information set. That shift is what WHOOP is actually selling.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ THE FUTURE ═══ -->
+<div class="article-wrap">
+  <div class="section">
+    <span class="section-label">08 — What Comes Next</span>
+    <h2>Health as a data engineering problem</h2>
+    <p>WHOOP's 12-year arc points toward something larger than a single company's success. It's evidence that the premise Ahmed started with in 2012 — that health performance is a data problem, and that better data produces better outcomes — is correct, and that the infrastructure to act on it is finally arriving.</p>
+    <p>The annual physical is a relic. A single snapshot of biomarkers, taken once a year, in a clinical environment that bears no relationship to how you actually live, is a ludicrously inadequate foundation for health decisions. What replaces it is continuous monitoring: wearables, smart clothing, ambient sensors, and AI systems that can identify anomalies before they become emergencies.</p>
+    <p>WHOOP is already building this infrastructure. The WHOOP MG's FDA clearance for atrial fibrillation detection signals that the regulatory pathway for consumer-grade clinical diagnostics is opening. The WHOOP Coach signals that the AI infrastructure to interpret longitudinal personal data at scale is viable. The 12 years of user data WHOOP has accumulated signals that the moat is already deep enough to be defended.</p>
+    <div class="callout">
+      <p>The US spends $4.5 trillion annually on healthcare — overwhelmingly reactive. Every data point that prevents a hospital visit is worth orders of magnitude more than the device that collected it. WHOOP is building at the beginning of that economic shift.</p>
+    </div>
+    <p>The convergence that matters isn't wearables plus smartphones. It's wearables plus large language models plus years of personalized longitudinal data. When those three things combine — as they're beginning to at WHOOP — you get something that has never existed before: <strong>a health intelligence system that knows your body as well as you know yourself, and can explain what it's seeing in plain language, in real time.</strong></p>
+    <p>That's not a feature. That's a new category. And WHOOP, for all its imperfections and the competition it will inevitably face, got there first.</p>
+  </div>
+</div>
+
+<!-- ═══ MARKET CHART ═══ -->
+<div class="spacer-sm"></div>
+<div class="chart-block reveal wide">
+  <div class="chart-title">Global Wearable Health Market Growth</div>
+  <div class="chart-sub">Market size in USD billions · 2019–2030 · Source: Grand View Research / IDC</div>
+  <div class="chart-wrap" style="height:240px;">
+    <canvas id="marketChart"></canvas>
+  </div>
+</div>
+<div class="spacer"></div>
+
+<!-- ═══ CLOSING ═══ -->
+<div class="pull-quote reveal">
+  <blockquote>"WHOOP didn't build a fitness tracker. They built the first version of a health intelligence system — and they did it by staying focused on a single question for twelve years."</blockquote>
+  <cite>— Yonis · Portfolio Analysis · 2026</cite>
+</div>
+
+<div class="article-wrap">
+  <div class="section">
+    <span class="section-label">Closing Thoughts</span>
+    <h2>Why this company's story matters</h2>
+    <p>Most startup post-mortems ask why companies fail. WHOOP's story is worth studying because it asks a different question: how does a founder with no engineering background, no medical credentials, and no product build a $3.6 billion company that the US military trusts with operational readiness?</p>
+    <p>The answer is a combination of genuine insight (the right problem to solve), founder conviction (the willingness to pitch a future that looked impossible), strategic patience (staying private, staying focused, resisting the easy exits), and a business model that aligned the company's success directly with its users' outcomes.</p>
+    <p>The data and AI revolution in health is not a future trend. It is happening, now, led by a company that a Harvard dropout started building in 2012 because he wanted to understand why his teammates kept getting hurt. The future of health is personal, continuous, data-driven, and AI-interpreted. WHOOP got there first. The question now is what comes next.</p>
+    <p style="color:var(--text3);font-size:.9rem;margin-top:40px;padding-top:24px;border-top:1px solid var(--border);">I've been wearing WHOOP continuously since June 2024 — 691 days across two years of college athletics, academic pressure, and daily life. The data shaped this analysis. The analysis shaped how I think about every complex system I interact with. That, more than any single chart, is the product's real value proposition.</p>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <p style="margin-bottom:8px;"><strong>Yonis</strong> — Data Analysis Portfolio</p>
+  <p>Cedarville University · Class of 2026 · <a href="#">yonisv.github.io</a></p>
+</footer>
+
+<script>
+// ── SCROLL REVEALS ──
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// ── CHART.JS DEFAULTS ──
+Chart.defaults.font.family = "'DM Sans', system-ui";
+Chart.defaults.color = '#9a9a9a';
+
+// ── 1. RECOVERY CHART ──
+const rMonths = ["Jun'24","Jul","Aug","Sep","Oct","Nov","Dec","Jan'25","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan'26","Feb","Mar","Apr","May'26"];
+const rData   = [58.7,66.5,57.7,50.2,62.7,57.4,54.0,53.2,59.8,62.9,50.1,57.0,65.4,59.2,59.8,53.8,69.2,52.5,49.4,52.2,54.0,57.1,47.8,61.5];
+const rColors = rData.map(v=>v>=67?'#3a5c00':v>=34?'#b89500':'#b83000');
+const rBg     = rData.map(v=>v>=67?'rgba(200,241,53,.85)':v>=34?'rgba(255,210,63,.85)':'rgba(255,83,83,.85)');
+
+new Chart(document.getElementById('recoveryChart').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:rMonths,
+    datasets:[{
+      label:'Recovery %',
+      data:rData,
+      backgroundColor:rBg,
+      borderRadius:3,
+      borderSkipped:false,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        callbacks:{label:ctx=>`Recovery: ${ctx.raw}%`},
+        backgroundColor:'#0a0a0a',titleColor:'#fff',bodyColor:'rgba(255,255,255,.7)',
+        borderColor:'rgba(255,255,255,.1)',borderWidth:1,
+        padding:10,
+      }
+    },
+    scales:{
+      x:{grid:{display:false},ticks:{font:{size:9,family:"'Space Mono'"},maxRotation:45,color:'#aaa'}},
+      y:{
+        min:35,max:80,
+        grid:{color:'rgba(0,0,0,.06)'},
+        ticks:{font:{size:9,family:"'Space Mono'"},stepSize:10,callback:v=>v+'%'},
+        border:{display:false}
+      }
+    },
+    animation:{duration:1000,easing:'easeOutQuart'}
+  }
+});
+
+// ── 2. FLYWHEEL (line) ──
+const fxMonths=['Month 1','Month 3','Month 6','Month 12','Month 18','Month 24'];
+new Chart(document.getElementById('flywheelChart').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:fxMonths,
+    datasets:[{
+      label:'WHOOP Value Index',
+      data:[20,35,52,71,84,96],
+      borderColor:'#3a5c00',
+      backgroundColor:'rgba(200,241,53,.12)',
+      borderWidth:2.5,
+      pointRadius:5,pointBackgroundColor:'#c8f135',pointBorderColor:'#3a5c00',pointBorderWidth:1.5,
+      fill:true,tension:.4,
+    },{
+      label:'Avg Competitor Value Index',
+      data:[30,33,36,38,40,41],
+      borderColor:'#cccccc',
+      backgroundColor:'transparent',
+      borderWidth:1.5,
+      pointRadius:4,pointBackgroundColor:'#ddd',
+      borderDash:[5,5],
+      fill:false,tension:.4,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'top',labels:{font:{size:11},boxWidth:12,padding:16}},
+      tooltip:{backgroundColor:'#0a0a0a',titleColor:'#fff',bodyColor:'rgba(255,255,255,.7)',padding:10,borderColor:'rgba(255,255,255,.1)',borderWidth:1}
+    },
+    scales:{
+      x:{grid:{display:false},ticks:{font:{size:10}}},
+      y:{min:0,max:110,grid:{color:'rgba(0,0,0,.06)'},border:{display:false},ticks:{font:{size:10},stepSize:25,callback:v=>v+' idx'},}
+    },
+    animation:{duration:1200,easing:'easeOutQuart'}
+  }
+});
+
+// ── 3. MARKET (bar) ──
+const mYears=['2019','2020','2021','2022','2023','2024','2025e','2026e','2028e','2030e'];
+const mData=[41,47,55,64,76,96,111,128,168,230];
+new Chart(document.getElementById('marketChart').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:mYears,
+    datasets:[{
+      label:'Market size ($B)',
+      data:mData,
+      backgroundColor:mData.map((_,i)=>i>=4?'rgba(200,241,53,.85)':'rgba(200,241,53,.3)'),
+      borderRadius:3,borderSkipped:false,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`},backgroundColor:'#0a0a0a',titleColor:'#fff',bodyColor:'rgba(255,255,255,.7)',padding:10}
+    },
+    scales:{
+      x:{grid:{display:false},ticks:{font:{size:10}}},
+      y:{grid:{color:'rgba(0,0,0,.06)'},border:{display:false},ticks:{font:{size:10},callback:v=>'$'+v+'B'},}
+    },
+    animation:{duration:1000,easing:'easeOutQuart'}
+  }
+});
+
+// ── 4. RADAR ──
+new Chart(document.getElementById('radarChart').getContext('2d'),{
+  type:'radar',
+  data:{
+    labels:['Recovery Science','Sleep Tracking','AI Coaching','Sport Adoption','Hardware Design','Data Depth'],
+    datasets:[{
+      label:'WHOOP 5.0',
+      data:[98,85,92,96,80,99],
+      borderColor:'#3a5c00',backgroundColor:'rgba(200,241,53,.2)',borderWidth:2,pointBackgroundColor:'#c8f135',
+    },{
+      label:'Oura Ring Gen 4',
+      data:[72,90,55,45,82,78],
+      borderColor:'#aaaaaa',backgroundColor:'rgba(170,170,170,.1)',borderWidth:1.5,borderDash:[4,4],pointBackgroundColor:'#ccc',
+    },{
+      label:'Apple Watch S10',
+      data:[40,60,30,52,95,35],
+      borderColor:'#cccccc',backgroundColor:'rgba(200,200,200,.08)',borderWidth:1.5,borderDash:[4,4],pointBackgroundColor:'#ddd',
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:12,padding:14}},tooltip:{backgroundColor:'#0a0a0a',padding:10}},
+    scales:{r:{
+      min:0,max:100,
+      grid:{color:'rgba(0,0,0,.08)'},
+      angleLines:{color:'rgba(0,0,0,.08)'},
+      pointLabels:{font:{size:11},color:'#555'},
+      ticks:{display:false}
+    }},
+    animation:{duration:1000}
+  }
+});
+</script>
+</body>
+</html>
